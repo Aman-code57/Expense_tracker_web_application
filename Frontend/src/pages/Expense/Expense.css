@@ -1,0 +1,362 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+}
+
+.navbared {
+  width: 100%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  z-index: 1000;
+}
+
+.navbared-titled {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  margin-left: 10px;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: blue;
+  transform: translateY(-1px);
+}
+
+/* Sidebar */
+.sidebared {
+  width: 200px;
+  height: calc(100vh - 80px);
+  background: white;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  padding: 20px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebared-links li a {
+  color: black;
+  text-decoration: none;
+  padding: 12px 20px;
+  display: block;
+  transition: background 0.3s ease;
+}
+
+.sidebared-links li a:hover {
+  background: gray;
+}
+
+.homepaged {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  margin: 0;
+  padding-top: 80px; 
+}
+
+.main-contents {
+  flex: 1;
+  margin-left: 200px; 
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  overflow-y: auto;
+}
+
+/* Table */
+.expense-list h3 {
+  font-size: 1.4rem;
+  color: #007bff;
+  margin-left: 30px;
+  margin-bottom: 60px;
+}
+
+.tabled-containered {
+  width: 98%;
+  margin-top: -50px;
+  overflow: hidden;
+  background: #fff;
+  color: black !;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  margin-left: 20px;
+}
+
+/* .customss-tabled {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+  color: #000;
+  margin-top: -20px;
+} */
+
+.customss-tabled th,
+.customss-tabled td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.customss-tabled th:last-child,
+.customss-tabled td:last-child {
+  text-align: center;
+}
+
+.customss-tabled thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.customss-tabled tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.customss-tabled tbody tr:hover {
+  background-color: gray;
+}
+
+.actionss {
+  display: flex;
+  gap: 15px;
+  width: 5px;
+  margin-right: 40px;
+}
+
+.actionss button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+}
+
+.actionss button:first-child {
+  background: #ffc107;
+  color: #fff;
+  width: 70px;
+  margin-left: -40px;
+}
+
+.actionss button:first-child:hover {
+  background: #e0a800;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.actionss button:last-child {
+  background: #dc3545 !important;
+  width: 80px;
+  margin-right: 100px;
+}
+
+.actionss button:last-child:hover {
+  background: #c82333 !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.main-contents button {
+  padding: 10px 20px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 15%;
+  margin-left: 20px;
+  transition: background 0.3s ease;
+}
+
+.main-contents button:hover {
+  background: #0056b3;
+}
+.btn-creates {
+  width: 15%;
+  padding: 12px 20px;
+  font-size: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-end;
+  background: #4caf50;
+  color: #fff;
+}
+
+.btn-creates:hover {
+  background: #388e3c;
+}
+
+.btn-cancels {
+  width: 15%;
+  padding: 12px 20px;
+  font-size: 12px;
+  margin-bottom: 20px;
+  align-self: flex-end;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancels:hover {
+  background: #5a6268;
+}
+
+.error {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.expense-forming {
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.form-grouping {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-grouping label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-grouping input,
+.form-grouping textarea {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  width: 90%;
+  background-color: #e9e7e7;
+  color: #000;
+}
+
+.form-grouping input:focus,
+.form-grouping textarea:focus {
+  outline: none;
+  background-color: white;
+  border-color: #2196f3;
+  box-shadow: 0 0 6px rgba(33,150,243,0.3);
+}
+
+.btn-submitedss {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: #28a745;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.btn-submitedss:hover {
+  background: #218838;
+}
+
+.searched-containers {
+  width: 100%;
+  margin-top: -15px;
+  text-align: right;
+}
+
+.searched-containers input {
+  width: 300px;
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.paginationed {
+  flex: 0 0 auto;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.paginationed button {
+  margin: 0 4px;
+  padding: 8px 14px;
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  background: #2196f3;
+  cursor: pointer;
+  width: 5%;
+}
+
+.paginationed button.active {
+  background: #2196f3;
+  color: white;
+}
+
+.paginationed button:hover {
+  background: #1976d2;
+  color:blue;
+}
+
+.btn-primary{
+  width: 200px;
+  color: whitesmoke;
+  background-color: green;
+  margin-left: 1080px;
+}
+
+.btn-secondary{
+  width: 200px;
+  color: whitesmoke;
+  background-color: gray;
+  margin-left: 1100px;
+
+}

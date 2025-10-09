@@ -1,0 +1,23 @@
+from sqlalchemy import Column, Integer, String, DateTime, Float, Text, ForeignKey
+from sqlalchemy.orm import relationship
+from datetime import datetime
+from database import Base
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    fullname = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, index=True, nullable=False)
+    gender = Column(String(20), nullable=False)
+    mobilenumber = Column(String(15), unique=True, index=True, nullable=False)
+    password = Column(String(200), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    reset_token = Column(String(200), nullable=True)
+    reset_token_expires = Column(DateTime, nullable=True)
+
+    expenses = relationship("Expense", back_populates="user")
+    incomes = relationship("Income", back_populates="user")
+
+    def __repr__(self):
+        return f"<User(id={self.id}, email={self.email}, fullname={self.fullname})>"
