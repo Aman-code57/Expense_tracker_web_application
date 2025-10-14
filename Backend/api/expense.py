@@ -14,7 +14,6 @@ async def get_expenses_safe(email: str = Depends(verify_token), db: Session = De
    
     try:
         
-        print("Email from token:", email)
         user = db.query(User).filter(User.email == email).first()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")

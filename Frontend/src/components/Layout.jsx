@@ -1,12 +1,13 @@
 import React from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import "./Layout.css";
+import { removeCookie } from "../utils/cookies";
 
 const Layout = ({ title, sidebarLinks, children }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    removeCookie("access_token");
     navigate("/signin");
   };
 

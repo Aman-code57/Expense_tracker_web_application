@@ -8,6 +8,7 @@ import DataTable from "../../components/DataTable";
 import Layout from "../../components/Layout";
 import Form from "../../components/Form"
 import api from "../../utils/api";
+import { getCookie, removeCookie } from "../../utils/cookies";
 
 function Expense() {
   const [expenses, setExpenses] = useState([]);
@@ -46,7 +47,7 @@ function Expense() {
   }, []);
 
   const fetchExpenses = async () => {
-    const token = localStorage.getItem("access_token");
+    const token = getCookie("access_token");
     if (!token) {
       toast.error("No access token found.");
       setLoading(false);
@@ -122,7 +123,7 @@ function Expense() {
   };
 
   const handleDelete = async (id) => {
-    const token = localStorage.getItem("access_token");
+    const token = getCookie("access_token");
     if (!token) {
       toast.error("No access token found.");
       return;
@@ -186,7 +187,7 @@ function Expense() {
   ];
 
   const handleFormSubmitWrapper = async (data) => {
-    const token = localStorage.getItem("access_token");
+    const token = getCookie("access_token");
     if (!token) {
       toast.error("No access token found.");
       return;

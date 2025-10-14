@@ -6,10 +6,7 @@ import InputField from "../../../components/InputField";
 import Navbar from "../../../components/Navbar";
 import "./SignIn.css";
 import api from "../../../utils/api";
-
-
-
-
+import { setCookie, getCookie } from "../../../utils/cookies";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -18,7 +15,7 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = getCookie("access_token");
     if (token) {
       navigate("/dashboard");
     }
@@ -85,7 +82,7 @@ const SignIn = () => {
         toast.success(data.message);
         setFormData({ email: "", password: "" });
         setErrors({});
-        localStorage.setItem("access_token", data.access_token);
+        setCookie("access_token", data.access_token);
         navigate("/dashboard");
       } else {
         toast.error(data.message || "Login failed");

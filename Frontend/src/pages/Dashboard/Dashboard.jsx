@@ -15,6 +15,7 @@ import {
 import "./Dashboard.css";
 import { formatIndianCurrency } from "../../utils/utils";
 import api from "../../utils/api";
+import { getCookie, removeCookie } from "../../utils/cookies";
 
 ChartJS.register(
   CategoryScale,
@@ -34,7 +35,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    removeCookie("access_token");
     navigate("/signin");
   };
 
@@ -46,7 +47,7 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const token = localStorage.getItem("access_token");
+      const token = getCookie("access_token");
 
       try {
         const response = await api.get("/dashboard", {
