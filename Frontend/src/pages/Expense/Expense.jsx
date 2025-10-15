@@ -85,10 +85,6 @@ function Expense() {
       case "category":
         if (!value.trim()) {
           error = "Category is required";
-        } else if (value.length < 3 || value.length > 15) {
-          error = "Category must be between 3 and 15 characters";
-        } else if (!/^[A-Z]/.test(value)) {
-          error = "Category must start with a capital letter";
         }
         break;
       case "amount":
@@ -177,9 +173,6 @@ function Expense() {
     if (name === "description" && value.length > 100) {
       processedValue = value.substring(0, 100);
     }
-    if (name === "category") {
-      processedValue = value.charAt(0).toUpperCase() + value.slice(1);
-    }
     setFormData({ ...formData, [name]: processedValue });
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
@@ -199,7 +192,7 @@ function Expense() {
 
   const fields = [
     { name: "amount", label: "Amount", type: "number", required: true },
-    { name: "category", label: "Category", type: "text", required: true },
+    { name: "category", label: "Category", type: "select", required: true, options: ["Food", "Transport", "Shopping", "Bills", "Health", "Entertainment", "Education", "Other"] },
     { name: "description", label: "Description", type: "text", required: true },
     { name: "date", label: "Date", type: "date", required: true },
   ];

@@ -12,9 +12,6 @@ const Form = ({ fields, initialData = {}, onSubmit, validateField, submitLabel =
     const { name, value } = e.target;
     let processedValue = value;
 
-    if (name === "category" && value) {
-      processedValue = value.charAt(0).toUpperCase() + value.slice(1);
-    }
     if (name === "description" && value.length > 150) {
       processedValue = value.substring(0, 150);
     }
