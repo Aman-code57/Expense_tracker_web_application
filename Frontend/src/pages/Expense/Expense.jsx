@@ -7,6 +7,7 @@ import { formatIndianCurrency } from "../../utils/utils";
 import DataTable from "../../components/DataTable";
 import Layout from "../../components/Layout";
 import Form from "../../components/Form"
+import DeleteConfirm from "../../components/DeleteConfirm";
 import api from "../../utils/api";
 import { getCookie, removeCookie } from "../../utils/cookies";
 
@@ -33,8 +34,8 @@ function Expense() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
-
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard" },
@@ -45,6 +46,11 @@ function Expense() {
   useEffect(() => {
     fetchExpenses();
   }, []);
+
+  const handleLogout = () => {
+    removeCookie("access_token");
+    Navigate("/signin")
+  }
 
   const fetchExpenses = async () => {
     const token = getCookie("access_token");
@@ -122,28 +128,40 @@ function Expense() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     const token = getCookie("access_token");
     if (!token) {
       toast.error("No access token found.");
       return;
     }
-    if (!window.confirm("Are you sure you want to delete this expense?")) return;
 
     try {
-      const response = await api.delete(`/expense/${id}`, {
+      const response = await api.delete(`/expense/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const result = response.data;
       if (result.status === "success") {
-        setExpenses(expenses.filter((exp) => exp.id !== id));
+        setExpenses(expenses.filter((exp) => exp.id !== deleteId));
         toast.success("Expense deleted!");
       } else {
         toast.error(result.message || "Failed to delete expense");
       }
     } catch (err) {
       toast.error("Error deleting expense: " + err.message);
+    } finally {
+      setDeleteModalOpen(false);
+      setDeleteId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setDeleteId(null);
   };
 
   const resetForm = () => {
@@ -182,7 +200,7 @@ function Expense() {
   const fields = [
     { name: "amount", label: "Amount", type: "number", required: true },
     { name: "category", label: "Category", type: "text", required: true },
-    { name: "description", label: "Description", type: "text" },
+    { name: "description", label: "Description", type: "text", required: true },
     { name: "date", label: "Date", type: "date", required: true },
   ];
 
@@ -255,7 +273,7 @@ function Expense() {
           data={expenses}
           columns={columns}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           itemsPerPage={itemsPerPage}
@@ -265,6 +283,13 @@ function Expense() {
           setSortConfig={setSortConfig}
         />
       )}
+
+      <DeleteConfirm
+        isOpen={deleteModalOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        itemName="expense"
+      />
     </Layout>
   );
 }

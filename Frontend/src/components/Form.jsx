@@ -27,9 +27,19 @@ const Form = ({ fields, initialData = {}, onSubmit, validateField, submitLabel =
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    if (validateField) {
-      const error = validateField(name, value);
-      setErrors((prev) => ({ ...prev, [name]: error }));
+    const field = fields.find(f => f.name === name);
+    let error = "";
+
+    if (field && field.required && !value.trim()) {
+      error = "This field is required.";
+    } else if (validateField) {
+      error = validateField(name, value);
+    }
+
+    setErrors((prev) => ({ ...prev, [name]: error }));
+
+    if (error && refs.current[name]) {
+      refs.current[name].focus();
     }
   };
 
@@ -37,8 +47,11 @@ const Form = ({ fields, initialData = {}, onSubmit, validateField, submitLabel =
     e.preventDefault();
     const newErrors = {};
     fields.forEach((field) => {
-      if (validateField) {
-        const error = validateField(field.name, formData[field.name]);
+      const value = formData[field.name] || "";
+      if (field.required && !value.trim()) {
+        newErrors[field.name] = "This field is required.";
+      } else if (validateField) {
+        const error = validateField(field.name, value);
         if (error) newErrors[field.name] = error;
       }
     });

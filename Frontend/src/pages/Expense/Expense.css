@@ -256,7 +256,7 @@ body, html {
   flex-wrap: wrap;
   gap: 15px;
   box-sizing: border-box;
-  background: #fff;
+  background: lightcyan;
 }
 
 .form-grouping {

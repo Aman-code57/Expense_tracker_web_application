@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pie, Line } from "react-chartjs-2";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,7 +15,8 @@ import {
 import "./Dashboard.css";
 import { formatIndianCurrency } from "../../utils/utils";
 import api from "../../utils/api";
-import { getCookie, removeCookie } from "../../utils/cookies";
+import { getCookie } from "../../utils/cookies";
+import Layout from "../../components/Layout";
 
 ChartJS.register(
   CategoryScale,
@@ -32,12 +33,6 @@ function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    removeCookie("access_token");
-    navigate("/signin");
-  };
 
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard" },
@@ -156,95 +151,69 @@ function Dashboard() {
   };
 
   return (
-    <div className="homepage">
-     
-      <nav className="navbar">
-        <h1 className="navbar-title">Expense Tracker</h1>
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
-      </nav>
+    <Layout title="Expense Tracker" sidebarLinks={sidebarLinks}>
+      <section className="summary">
+        <div className="summary-card gradient1">
+          <h3>Total Spent</h3>
+          <p>₹{formatIndianCurrency(dashboardData?.total_spent ?? 0)}</p>
+        </div>
+        <div className="summary-card gradient2">
+          <h3>Total Income</h3>
+          <p>₹{formatIndianCurrency(dashboardData?.total_income ?? 0)}</p>
+        </div>
+        <div className="summary-card gradient3">
+          <h3>Monthly Avg</h3>
+          <p>₹{formatIndianCurrency(dashboardData?.monthly_average ?? 0)}</p>
+        </div>
+      </section>
 
-      
-      <div className="sidebar">
-        <ul className="sidebar-links">
-          {sidebarLinks.map((link, idx) => (
-            <li key={idx}>
-              <NavLink
-                to={link.href}
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                {link.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <section className="charts">
+        <div className="chart-box">
+          <h3>Category Breakdown</h3>
+          <Pie data={pieData} options={pieOptions} />
+        </div>
 
-      <div className="main-content">
-        <section className="summary">
-          <div className="summary-card gradient1">
-            <h3>Total Spent</h3>
-            <p>₹{formatIndianCurrency(dashboardData?.total_spent ?? 0)}</p>
-          </div>
-          <div className="summary-card gradient2">
-            <h3>Total Income</h3>
-            <p>₹{formatIndianCurrency(dashboardData?.total_income ?? 0)}</p>
-          </div>
-          <div className="summary-card gradient3">
-            <h3>Monthly Avg</h3>
-            <p>₹{formatIndianCurrency(dashboardData?.monthly_average ?? 0)}</p>
-          </div>
-        </section>
+        <div className="chart-box">
+          <h3>Monthly Trend</h3>
+          <Line data={lineData} />
+        </div>
+      </section>
 
-        <section className="charts">
-          <div className="chart-box">
-            <h3>Category Breakdown</h3>
-            <Pie data={pieData} options={pieOptions} />
-          </div>
-
-          <div className="chart-box">
-            <h3>Monthly Trend</h3>
-            <Line data={lineData} />
-          </div>
-        </section>
-
-        {/*Recent Expenses */}
-        <section className="expenseds-lists">
-          <h3>Recent Expenses</h3>
-          <div className="table-container">
-            <table className="custom-tables">
-              <thead>
+      {/*Recent Expenses */}
+      <section className="expenseds-lists">
+        <h3>Recent Expenses</h3>
+        <div className="table-container">
+          <table className="custom-tables">
+            <thead>
+              <tr>
+                {headers.map((h, idx) => (
+                  <th key={idx}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
                 <tr>
-                  {headers.map((h, idx) => (
-                    <th key={idx}>{h}</th>
-                  ))}
+                  <td colSpan={headers.length} style={{ textAlign: "center" }}>
+                    No data
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {data.length === 0 ? (
-                  <tr>
-                    <td colSpan={headers.length} style={{ textAlign: "center" }}>
-                      No data
-                    </td>
+              ) : (
+                data.map((row, idx) => (
+                  <tr key={idx}>
+                    {row.map((cell, i) => (
+                      <td key={i}>
+                        {React.isValidElement(cell) ? cell : cell}
+                      </td>
+                    ))}
                   </tr>
-                ) : (
-                  data.map((row, idx) => (
-                    <tr key={idx}>
-                      {row.map((cell, i) => (
-                        <td key={i}>
-                          {React.isValidElement(cell) ? cell : cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-    </div>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </Layout>
   );
 }
 

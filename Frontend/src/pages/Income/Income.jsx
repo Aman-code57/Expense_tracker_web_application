@@ -7,6 +7,7 @@ import { formatIndianCurrency } from "../../utils/utils";
 import DataTable from "../../components/DataTable";
 import Layout from "../../components/Layout";
 import Form from "../../components/Form";
+import DeleteConfirm from "../../components/DeleteConfirm";
 import api from "../../utils/api";
 import { getCookie, removeCookie } from "../../utils/cookies";
 
@@ -33,6 +34,8 @@ function Income() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -130,28 +133,40 @@ function Income() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     const token = getCookie("access_token");
     if (!token) {
       toast.error("No access token found.");
       return;
     }
-    if (!window.confirm("Are you sure you want to delete this income?")) return;
 
     try {
-      const response = await api.delete(`/income/${id}`, {
+      const response = await api.delete(`/income/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const result = response.data;
       if (result.status === "success") {
-        setIncomes(incomes.filter((inc) => inc.id !== id));
+        setIncomes(incomes.filter((inc) => inc.id !== deleteId));
         toast.success("Income deleted!");
       } else {
         toast.error(result.message || "Failed to delete income");
       }
     } catch (err) {
       toast.error("Error deleting income: " + err.message);
+    } finally {
+      setDeleteModalOpen(false);
+      setDeleteId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setDeleteId(null);
   };
 
   const resetForm = () => {
@@ -211,7 +226,7 @@ function Income() {
   const fields = [
     { name: "source", label: "Source", type: "text", required: true },
     { name: "amount", label: "Amount", type: "number", required: true },
-    { name: "description", label: "Description", type: "text" },
+    { name: "description", label: "Description", type: "text", required: true },
     { name: "income_date", label: "Date", type: "date", required: true },
   ];
 
@@ -246,7 +261,7 @@ return (
           data={incomes}
           columns={columns}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           itemsPerPage={itemsPerPage}
@@ -256,6 +271,13 @@ return (
           setSortConfig={setSortConfig}
         />
       )}
+
+      <DeleteConfirm
+        isOpen={deleteModalOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        itemName="income"
+      />
     </Layout>
   );
 }
