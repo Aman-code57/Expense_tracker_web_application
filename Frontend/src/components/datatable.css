@@ -1,0 +1,57 @@
+.btn-delete{
+    width: 50px;
+    height: 40px;
+    background-color: rgb(214, 49, 49);
+    color: white;
+}
+.btn-edit{
+   width: 50px;
+   height: 40px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: black;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination button:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination-btn:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+.dots {
+  margin: 0 5px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+

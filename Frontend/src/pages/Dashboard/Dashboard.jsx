@@ -17,6 +17,7 @@ import { formatIndianCurrency } from "../../utils/utils";
 import api from "../../utils/api";
 import { getCookie } from "../../utils/cookies";
 import Layout from "../../components/Layout";
+import { RxDashboard } from "react-icons/rx";
 
 ChartJS.register(
   CategoryScale,

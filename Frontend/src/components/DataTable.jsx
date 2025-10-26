@@ -1,4 +1,8 @@
 import React from 'react';
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaRegEdit } from "react-icons/fa";
+import LoadingOverlay from './LoadingOverlay';
+import "./datatable.css";
 
 const DataTable = ({
   data,
@@ -12,7 +16,9 @@ const DataTable = ({
   setSearchTerm,
   sortConfig,
   setSortConfig,
-  tableClass = 'custom-tabled'
+  tableClass = 'custom-tabled',
+  isUpdating = false,
+  isDeleting = false
 }) => {
   const filteredData = data.filter((item) =>
     columns.some((col) =>
@@ -34,13 +40,49 @@ const DataTable = ({
   const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   const handleSort = (key) => {
     if (!columns.find(col => col.key === key)?.sortable) return;
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc';
     setSortConfig({ key, direction });
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    const lastPage = totalPages;
+
+    for (let i = 1; i <= totalPages; i++) {
+      // Show first, last, current, and neighbors of current
+      if (
+        i === 1 ||
+        i === lastPage ||
+        (i >= currentPage - 1 && i <= currentPage + 1)
+      ) {
+        pages.push(i);
+      } else if (pages[pages.length - 1] !== '...') {
+        pages.push('...');
+      }
+    }
+
+    return pages.map((page, index) =>
+      page === '...' ? (
+        <span key={index} className="dots">...</span>
+      ) : (
+        <button
+          key={index}
+          onClick={() => paginate(page)}
+          className={currentPage === page ? 'active' : ''}
+        >
+          {page}
+        </button>
+      )
+    );
   };
 
   return (
@@ -84,11 +126,11 @@ const DataTable = ({
                     <td key={i}>
                       {col.key === 'actions' ? (
                         <div className="actions">
-                          <button className="btn-edit" onClick={() => onEdit(item)}>
-                            Edit
+                          <button className="btn-edit" onClick={() => onEdit(item)} disabled={isUpdating}>
+                            <FaRegEdit />
                           </button>
-                          <button className="btn-delete" onClick={() => onDelete(item.id)}>
-                            Delete
+                          <button className="btn-delete" onClick={() => onDelete(item.id)} disabled={isDeleting}>
+                            <RiDeleteBin6Line />
                           </button>
                         </div>
                       ) : col.format ? (
@@ -107,17 +149,27 @@ const DataTable = ({
 
       {totalPages > 1 && (
         <div className="pagination">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => paginate(i + 1)}
-              className={currentPage === i + 1 ? 'active' : ''}
-            >
-              {i + 1}
-            </button>
-          ))}
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="pagination-btn"
+          >
+            Previous
+          </button>
+
+          {renderPagination()}
+
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="pagination-btn"
+          >
+            Next
+          </button>
         </div>
       )}
+
+      <LoadingOverlay isVisible={isUpdating || isDeleting} />
     </>
   );
 };

@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InputField from "../../../components/InputField";
 import Navbar from "../../../components/Navbar";
+import LoadingOverlay from "../../../components/LoadingOverlay";
 import "./SignIn.css";
 import api from "../../../utils/api";
 import { setCookie, getCookie } from "../../../utils/cookies";
@@ -82,6 +83,7 @@ const SignIn = () => {
         setFormData({ email: "", password: "" });
         setErrors({});
         setCookie("access_token", data.access_token);
+        localStorage.setItem("user_email", data.user.email);
         navigate("/dashboard");
       } else {
         toast.error(data.message || "Login failed");
@@ -142,6 +144,7 @@ const SignIn = () => {
           theme="colored"
         />
       </div>
+      <LoadingOverlay isVisible={loading} />
     </div>
   );
 };

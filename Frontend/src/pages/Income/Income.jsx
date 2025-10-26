@@ -8,6 +8,7 @@ import DataTable from "../../components/DataTable";
 import Layout from "../../components/Layout";
 import Form from "../../components/Form";
 import DeleteConfirm from "../../components/DeleteConfirm";
+import LoadingOverlay from "../../components/LoadingOverlay";
 import api from "../../utils/api";
 import { getCookie, removeCookie } from "../../utils/cookies";
 
@@ -36,6 +37,8 @@ function Income() {
   const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -145,6 +148,7 @@ function Income() {
       return;
     }
 
+    setIsDeleting(true);
     try {
       const response = await api.delete(`/income/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -159,6 +163,7 @@ function Income() {
     } catch (err) {
       toast.error("Error deleting income: " + err.message);
     } finally {
+      setIsDeleting(false);
       setDeleteModalOpen(false);
       setDeleteId(null);
     }
@@ -187,6 +192,8 @@ function Income() {
       ? `/income/${editingId}`
       : "/income";
 
+    setIsUpdating(true);
+    const startTime = Date.now();
     try {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -211,6 +218,10 @@ function Income() {
       }
     } catch (err) {
       toast.error("Error saving income: " + err.message);
+    } finally {
+      const elapsed = Date.now() - startTime;
+      const minDelay = 500; // Minimum 500ms to ensure visibility
+      setTimeout(() => setIsUpdating(false), Math.max(0, minDelay - elapsed));
     }
   };
 
@@ -269,6 +280,8 @@ return (
           setSearchTerm={setSearchTerm}
           sortConfig={sortConfig}
           setSortConfig={setSortConfig}
+          isUpdating={isUpdating}
+          isDeleting={isDeleting}
         />
       )}
 
@@ -278,6 +291,7 @@ return (
         onConfirm={handleDeleteConfirm}
         itemName="income"
       />
+      <LoadingOverlay isVisible={isUpdating || isDeleting} />
     </Layout>
   );
 }

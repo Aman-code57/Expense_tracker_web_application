@@ -8,6 +8,7 @@ import DataTable from "../../components/DataTable";
 import Layout from "../../components/Layout";
 import Form from "../../components/Form"
 import DeleteConfirm from "../../components/DeleteConfirm";
+import LoadingOverlay from "../../components/LoadingOverlay";
 import api from "../../utils/api";
 import { getCookie, removeCookie } from "../../utils/cookies";
 
@@ -36,6 +37,8 @@ function Expense() {
   const [sortConfig, setSortConfig] = useState({ key: "id", direction: "asc" });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard" },
@@ -136,6 +139,7 @@ function Expense() {
       return;
     }
 
+    setIsDeleting(true);
     try {
       const response = await api.delete(`/expense/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -150,6 +154,7 @@ function Expense() {
     } catch (err) {
       toast.error("Error deleting expense: " + err.message);
     } finally {
+      setIsDeleting(false);
       setDeleteModalOpen(false);
       setDeleteId(null);
     }
@@ -192,7 +197,7 @@ function Expense() {
 
   const fields = [
     { name: "amount", label: "Amount", type: "number", required: true },
-    { name: "category", label: "Category", type: "select", required: true, options: ["Food", "Transport", "Shopping", "Bills", "Health", "Entertainment", "Education", "Other"] },
+    { name: "category", label: "Category", type: "select", required: true, options: ["Food", "Transport", "Shopping", "Bills", "Health", "Entertainment", "Education","Rent", "Other"] },
     { name: "description", label: "Description", type: "text", required: true },
     { name: "date", label: "Date", type: "date", required: true },
   ];
@@ -208,6 +213,8 @@ function Expense() {
       ? `/expense/${editingId}`
       : "/expense";
 
+    setIsUpdating(true);
+    const startTime = Date.now();
     try {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -232,6 +239,10 @@ function Expense() {
       }
     } catch (err) {
       toast.error("Error saving expense: " + err.message);
+    } finally {
+      const elapsed = Date.now() - startTime;
+      const minDelay = 1000; 
+      setTimeout(() => setIsUpdating(false), Math.max(0, minDelay - elapsed));
     }
   };
 
@@ -274,6 +285,8 @@ function Expense() {
           setSearchTerm={setSearchTerm}
           sortConfig={sortConfig}
           setSortConfig={setSortConfig}
+          isUpdating={isUpdating}
+          isDeleting={isDeleting}
         />
       )}
 
@@ -283,6 +296,7 @@ function Expense() {
         onConfirm={handleDeleteConfirm}
         itemName="expense"
       />
+      <LoadingOverlay isVisible={isUpdating || isDeleting} />
     </Layout>
   );
 }
